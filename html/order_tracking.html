@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Track Order | MadeBy_Ifemi</title>
+    <link rel="icon" href="../images/yarn.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Ancizar+Sans:ital,wght@0,100..1000;1,100..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/order_tracking.css">
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen p-4 text-gray-200">
+
+    <div class="w-full max-w-2xl bg-gray-800 shadow-xl rounded-xl flex flex-col h-[90vh] md:h-[80vh]">
+        <header class="p-4 border-b border-gray-700">
+            <h1 class="text-xl font-semibold text-center text-white">Order Tracking</h1>
+        </header>
+
+        <div id="chatMessages" class="flex-1 p-6 space-y-4 overflow-y-auto chat-messages">
+            <div class="flex justify-start">
+                <div class="p-3 message-bubble bot-bubble">
+                    <p class="text-sm">Hello! Please enter your Order ID below to get the latest updates.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingIndicator" class="hidden p-4 flex items-center justify-center">
+            <div class="loader mr-2"></div>
+            <span class="text-sm text-gray-400">Fetching order details...</span>
+        </div>
+
+        <div class="p-4 border-t border-gray-700">
+            <div class="flex items-center space-x-2">
+                <input type="text" id="orderIdInput" placeholder="Enter your Order ID..."
+                    class="flex-1 p-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-white placeholder-gray-400">
+                <button id="trackOrderButton"
+                    class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800">
+                    Track
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/tracking.js"></script>
+</body>
+
+</html>

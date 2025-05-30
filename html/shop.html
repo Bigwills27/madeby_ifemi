@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop | MadeBy_Ifemi | Made with Love 💙</title>
+    <link rel="icon" href="../images/yarn.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Ancizar+Sans:ital,wght@0,100..1000;1,100..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/shop.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="#" class="logo">
+                <div class="logo-icon">🧶</div>
+                Madeby_ifemi
+            </a>
+            <div class="header-right">
+                <!-- Search -->
+                <div class="group">
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
+                        <g>
+                            <path
+                                d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
+                            </path>
+                        </g>
+                    </svg>
+                    <input placeholder="Search" type="search" class="input" id="searchInput">
+                </div>
+
+                <!-- Cart -->
+                <div class="cart" id="cartIcon">
+                    <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+
+                <!-- Menu -->
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </div>
+        </header>
+
+        <!-- Loading indicator -->
+        <div id="loadingIndicator" class="loading-container" style="display: none;">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+            <p>Loading products...</p>
+        </div>
+
+        <!-- Error message -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <p>Unable to load products. Please check your connection and try again.</p>
+            <button onclick="initializePage()" class="retry-btn">Retry</button>
+        </div>
+
+        <!-- Best Sellers Section -->
+        <section class="best-sellers">
+            <div class="section-header">
+                <div class="hashs">
+                    <small class="hash">#Handmade</small>
+                    <small class="hash">#BestSellers</small>
+                </div>
+                <h2 class="section-title">Most Loved</h2>
+                <p class="section-subtitle">Our customers' favorite pieces</p>
+            </div>
+            <div class="horizontal-scroll" id="bestSellers">
+                <!-- Best seller items will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- New Works Section -->
+        <section class="new-works">
+            <div class="section-header">
+                <div class="hashs">
+                    <small class="hash">#Fresh</small>
+                    <small class="hash">#NewWorks</small>
+                </div>
+                <h2 class="section-title">Latest Creations</h2>
+                <p class="section-subtitle">Fresh from the hook</p>
+            </div>
+            <div class="horizontal-scroll" id="newWorks">
+                <!-- New work items will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Custom Request Section -->
+        <section class="custom-request">
+            <h3>Have Something Special in Mind?</h3>
+            <p>Let's create something unique together! I love bringing your vision to life with custom crochet pieces.
+            </p>
+            <a href="#contact" class="custom-request-btn">Request Custom Order</a>
+        </section>
+
+        <!-- Catalogue Section -->
+        <section class="catalogue">
+            <div class="section-header">
+                <div class="hashs">
+                    <small class="hash">#Catalogue</small>
+                    <small class="hash">#AllItems</small>
+                </div>
+                <h2 class="section-title">Full Collection</h2>
+                <p class="section-subtitle">Explore all our handmade treasures</p>
+            </div>
+            <div class="catalogue-grid" id="catalogueGrid">
+                <!-- Catalogue items will be populated by JavaScript -->
+            </div>
+            <div class="load-more">
+                <button class="load-more-btn" id="loadMoreBtn" style="display: none;">Load More Items</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Item Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Item Name</h3>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img id="modalImage" class="modal-image"
+                        src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0yMDAgMTIwTDI0MCAyMDBIMjIwVjI0MEgxODBWMjAwSDE2MEwyMDAgMTIwWiIgZmlsbD0iI0NDQyIvPgo8dGV4dCB4PSIyMDAiIHk9IjI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OSIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg=="
+                        alt="Item">
+                </div>
+                <div class="modal-details">
+                    <div class="modal-price" id="modalPrice">₦0</div>
+                    <div class="modal-description" id="modalDescription">
+                        Beautiful handcrafted item made with love and attention to detail.
+                    </div>
+
+                    <div class="option-group">
+                        <label class="option-label">Size:</label>
+                        <div class="size-options">
+                            <input type="radio" id="sizeS" name="size" value="S" class="size-option" checked>
+                            <label for="sizeS" class="size-label">S</label>
+
+                            <input type="radio" id="sizeL" name="size" value="L" class="size-option">
+                            <label for="sizeL" class="size-label">L</label>
+
+                            <input type="radio" id="sizeXL" name="size" value="XL" class="size-option">
+                            <label for="sizeXL" class="size-label">XL</label>
+
+                            <input type="radio" id="sizeXXL" name="size" value="XXL" class="size-option">
+                            <label for="sizeXXL" class="size-label">XXL</label>
+
+                            <input type="radio" id="sizeXXXL" name="size" value="XXXL" class="size-option">
+                            <label for="sizeXXXL" class="size-label">XXXL</label>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label class="option-label">Color:</label>
+                        <div class="color-options">
+                            <input type="radio" id="colorCream" name="color" value="cream" class="color-option" checked>
+                            <label for="colorCream" class="color-swatch" style="background-color: #f5f5dc;"></label>
+
+                            <input type="radio" id="colorBlue" name="color" value="blue" class="color-option">
+                            <label for="colorBlue" class="color-swatch" style="background-color: #46b7d1;"></label>
+
+                            <input type="radio" id="colorPink" name="color" value="pink" class="color-option">
+                            <label for="colorPink" class="color-swatch" style="background-color: #ff6b6b;"></label>
+
+                            <input type="radio" id="colorTeal" name="color" value="teal" class="color-option">
+                            <label for="colorTeal" class="color-swatch" style="background-color: #4ecdc4;"></label>
+
+                            <input type="radio" id="colorNavy" name="color" value="navy" class="color-option">
+                            <label for="colorNavy" class="color-swatch" style="background-color: #2c3e50;"></label>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label class="option-label">Quantity:</label>
+                        <div class="quantity-control">
+                            <button class="quantity-btn" id="decreaseQty">-</button>
+                            <input type="number" id="quantityInput" class="quantity-input" value="1" min="1" max="10">
+                            <button class="quantity-btn" id="increaseQty">+</button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label class="option-label">Custom Message (Optional):</label>
+                        <textarea id="customMessage" class="custom-message"
+                            placeholder="Any special requests or customizations? Let me know what you have in mind..."></textarea>
+                    </div>
+
+                    <button class="add-to-cart-btn" id="addToCartBtn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content cart-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Shopping Cart</h3>
+                <button class="close-btn" onclick="closeCartModal()">&times;</button>
+            </div>
+            <div class="modal-body cart-modal-body">
+                <div id="cartItems" class="cart-items">
+                    <!-- Cart items will be populated by JavaScript -->
+                </div>
+                <div class="cart-footer">
+                    <div class="cart-total-section">
+                        <div class="cart-total-label">Total:</div>
+                        <div class="cart-total-amount" id="cartTotal">₦0</div>
+                    </div>
+                    <div class="cart-actions">
+                        <button class="btn btn-secondary" onclick="closeCartModal()">Continue Shopping</button>
+                        <button class="btn btn-primary" id="checkoutBtn" onclick="openCheckoutModal()" disabled>
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content checkout-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Checkout</h3>
+                <button class="close-btn" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+            <div class="modal-body checkout-modal-body">
+                <div class="checkout-sections">
+                    <div class="checkout-summary">
+                        <h4>Order Summary</h4>
+                        <div id="checkoutItems" class="checkout-items">
+                            <!-- Checkout items will be populated by JavaScript -->
+                        </div>
+                        <div class="checkout-total">
+                            <strong>Total: <span id="checkoutTotal">₦0</span></strong>
+                        </div>
+                    </div>
+
+                    <div class="checkout-form-section">
+                        <h4>Customer Information</h4>
+                        <form id="checkoutForm" onsubmit="event.preventDefault(); submitOrder();">
+                            <div class="form-group">
+                                <label for="customerName">Full Name *</label>
+                                <input type="text" id="customerName" name="customerName" required class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number *</label>
+                                <input type="tel" id="phoneNumber" name="phoneNumber" required class="form-input"
+                                    placeholder="e.g., 08012345678">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Delivery Method *</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" id="pickup" name="deliveryMethod" value="pickup" required>
+                                        <label for="pickup">Pickup (Free)</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" id="delivery" name="deliveryMethod" value="delivery"
+                                            required>
+                                        <label for="delivery">Delivery (Customer covers delivery fees)</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary checkout-submit-btn">
+                                Place Order
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content payment-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Payment Information</h3>
+            </div>
+            <div class="modal-body payment-modal-body">
+                <div class="payment-success">
+                    <div class="payment-icon">✓</div>
+                    <h4>Order Placed Successfully!</h4>
+                    <p>Order ID: <strong id="paymentOrderId"></strong></p>
+                    <p>Total Amount: <strong id="paymentTotal"></strong></p>
+                </div>
+
+                <div class="payment-instructions">
+                    <h5>Payment Instructions:</h5>
+                    <p>Please make a transfer to the account below:</p>
+                    <div class="account-details">
+                        <div class="account-info">
+                            <strong>Account Number:</strong> 9159739013<br>
+                            <strong>Bank:</strong> Opay
+                        </div>
+                    </div>
+                    <p class="payment-note">
+                        After making the payment, please enter the name of the account you used below:
+                    </p>
+                </div>
+
+                <div class="payment-confirmation">
+                    <div class="form-group">
+                        <label for="accountName">Account Name Used for Payment *</label>
+                        <input type="text" id="accountName" class="form-input"
+                            placeholder="Enter the exact name on your account" required>
+                    </div>
+
+                    <div class="payment-actions">
+                        <button class="btn btn-primary" onclick="confirmPayment()">
+                            Confirm Payment Made
+                        </button>
+                    </div>
+                </div>
+
+                <div class="contact-info">
+                    <p><small>We will contact you via the phone number provided to confirm your order and
+                            payment.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/shop.js"></script>
+</body>
+
+</html>

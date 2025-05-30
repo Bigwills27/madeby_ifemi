@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 400px;
+            height: 600px;
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .chat-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.bot {
+            background: #f1f3f5;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 8px;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 8px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .order-id {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: #667eea;
+            font-size: 12px;
+        }
+
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .status-paid {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .customer-info {
+            margin-bottom: 15px;
+        }
+
+        .customer-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .customer-details {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .items-section {
+            margin-bottom: 15px;
+        }
+
+        .items-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .item-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #e9ecef;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .item-specs {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 12px;
+        }
+
+        .custom-message {
+            background: #e3f2fd;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #1565c0;
+            font-style: italic;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .total-label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .total-amount {
+            font-weight: 700;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            background: white;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .order-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .order-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-button {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+
+        .send-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .loading-dot {
+            width: 6px;
+            height: 6px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: loading 1.4s infinite ease-in-out;
+        }
+
+        .loading-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loading-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes loading {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            font-size: 13px;
+            margin-top: 50px;
+        }
+
+        .date-info {
+            font-size: 11px;
+            color: #999;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                height: 100vh;
+                max-width: 100%;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Order Tracking</h1>
+            <p>Enter your order ID to track your order</p>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                👋 Hi! Send me your order ID and I'll help you track your order
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <div class="input-container">
+                <input type="text" class="order-input" id="orderInput" placeholder="Enter Order ID..." maxlength="24">
+                <button class="send-button" id="sendButton">
+                    Track
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const orderInput = document.getElementById('orderInput');
+        const sendButton = document.getElementById('sendButton');
+        const API_BASE_URL = "http://localhost:10000/api";
+
+
+        function addMessage(content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            messageDiv.innerHTML = content;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addLoadingMessage() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot loading';
+            loadingDiv.innerHTML = `
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            `;
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return loadingDiv;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(parseInt(dateString));
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-NG', {
+                style: 'currency',
+                currency: 'NGN'
+            }).format(amount);
+        }
+
+        function createOrderCard(order) {
+            const orderDate = order.orderDate?.$date?.$numberLong || order.createdAt?.$date?.$numberLong;
+            const paymentConfirmed = order.paymentConfirmedAt?.$date?.$numberLong;
+            const orderId = order._id?.$oid || order._id || 'Unknown';
+            const orderIdDisplay = typeof orderId === 'string' ? orderId.slice(-8).toUpperCase() : orderId.toString().slice(-8).toUpperCase();
+
+            return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-id">Order #${orderIdDisplay}</div>
+                        <div class="order-status ${order.paymentStatus === 'payment_made' ? 'status-paid' : 'status-pending'}">
+                            ${order.paymentStatus === 'payment_made' ? '✓ Paid' : '⏳ Pending'}
+                        </div>
+                    </div>
+                    
+                    <div class="customer-info">
+                        <div class="customer-name">${order.customerName || 'N/A'}</div>
+                        <div class="customer-details">
+                            ${order.phoneNumber ? `📱 ${order.phoneNumber}` : ''}
+                            ${order.deliveryMethod ? `• 🚚 ${order.deliveryMethod.charAt(0).toUpperCase() + order.deliveryMethod.slice(1)}` : ''}
+                        </div>
+                    </div>
+
+                    <div class="items-section">
+                        <div class="items-title">Items Ordered</div>
+                        ${order.items.map(item => `
+                            <div class="item">
+                                <img src="${item.image || ''}" alt="${item.name}" class="item-image" onerror="this.style.display='none'">
+                                <div class="item-details">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-specs">
+                                        ${item.size ? `Size: ${item.size}` : ''} 
+                                        ${item.color ? `• Color: ${item.color}` : ''} 
+                                        ${item.quantity ? `• Qty: ${item.quantity.$numberInt || item.quantity}` : ''}
+                                    </div>
+                                    <div class="item-price">${formatCurrency(item.price.$numberInt || item.price)}</div>
+                                    ${item.customMessage ? `<div class="custom-message">💬 "${item.customMessage}"</div>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="order-total">
+                        <span class="total-label">Total Amount</span>
+                        <span class="total-amount">${formatCurrency(order.total.$numberInt || order.total)}</span>
+                    </div>
+
+                    <div class="date-info">
+                        ${orderDate ? `📅 Ordered: ${formatDate(orderDate)}` : ''}
+                        ${paymentConfirmed ? `<br>💳 Payment confirmed: ${formatDate(paymentConfirmed)}` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function trackOrder(orderId) {
+            if (!orderId.trim()) {
+                addMessage('<div class="error-message">Please enter a valid order ID</div>');
+                return;
+            }
+
+            // Add user message
+            addMessage(orderId, true);
+
+            // Add loading message
+            const loadingMessage = addLoadingMessage();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
+
+                // Remove loading message
+                loadingMessage.remove();
+
+                if (response.ok) {
+                    const order = await response.json();
+                    addMessage(`Great! I found your order. Here are the details:`);
+                    addMessage(createOrderCard(order));
+                } else if (response.status === 404) {
+                    addMessage('<div class="error-message">❌ Order not found. Please check your order ID and try again.</div>');
+                } else {
+                    addMessage('<div class="error-message">❌ Sorry, there was an error fetching your order. Please try again later.</div>');
+                }
+            } catch (error) {
+                loadingMessage.remove();
+                addMessage('<div class="error-message">❌ Network error. Please check your connection and try again.</div>');
+            }
+        }
+
+        function handleSend() {
+            const orderId = orderInput.value.trim();
+            if (orderId) {
+                trackOrder(orderId);
+                orderInput.value = '';
+            }
+        }
+
+        sendButton.addEventListener('click', handleSend);
+        orderInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSend();
+            }
+        });
+
+        // Focus input on load
+        orderInput.focus();
+    </script>
+</body>
+
+</html>
