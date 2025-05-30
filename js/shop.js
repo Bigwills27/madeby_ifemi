@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = "https://ifemade-server.onrender.com";
+const API_BASE_URL = "https://ifemade-server.onrender.com/api";
 
 // Toast notification system
 function showToast(message, type = "success") {

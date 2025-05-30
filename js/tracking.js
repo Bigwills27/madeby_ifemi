@@ -3,7 +3,7 @@ const orderIdInput = document.getElementById("orderIdInput");
 const trackOrderButton = document.getElementById("trackOrderButton");
 const loadingIndicator = document.getElementById("loadingIndicator");
 
-const API_BASE_URL = "https://ifemade-server.onrender.com";
+const API_BASE_URL = "https://ifemade-server.onrender.com/api";
 
 // Function to format date from an ISO string
 function formatDate(dateString) {
