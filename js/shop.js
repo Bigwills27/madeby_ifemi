@@ -708,7 +708,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelector(".custom-request-btn")
     .addEventListener("click", (e) => {
       e.preventDefault();
-      alert("This would redirect to a custom order form or contact page.");
+      alert("This would redirect to Whatsapp.");
     });
 
   const buttons = document.querySelectorAll(

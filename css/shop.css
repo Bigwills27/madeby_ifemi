@@ -168,10 +168,14 @@ input:hover {
     height: 1rem;
 }
 
-.menu-icon {
-    width: 24px;
-    height: 24px;
+.track-btn {
+    font-family: "Ancizar Sans", sans-serif;
     cursor: pointer;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 0.8em;
+    line-height: 10px;
+    color: var(--primary);
 }
 
 .cart {
@@ -1203,10 +1207,6 @@ input:hover {
 
     .header-right {
         gap: 1rem;
-    }
-
-    .cart {
-        display: none;
     }
 
     .section-title {
