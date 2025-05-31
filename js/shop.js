@@ -483,6 +483,9 @@ async function submitOrder() {
 
     clearCart();
     closeCheckoutModal();
+    alert(
+      "⚠️ Please make sure to copy your orderId on this next page and save it somewhere."
+    );
     showPaymentModal(order._id, orderData);
   } catch (error) {
     console.error("Error submitting order:", error);
@@ -504,16 +507,57 @@ function closePaymentModal() {
 }
 
 function copyToClip(message, textToCopy) {
-  navigator.clipboard
-    .writeText(textToCopy)
-    .then(() => {
+  const tempTextArea = document.createElement("textarea");
+  tempTextArea.value = textToCopy;
+  tempTextArea.style.position = "absolute";
+  tempTextArea.style.left = "-9999px";
+  document.body.appendChild(tempTextArea);
+
+  tempTextArea.select();
+  tempTextArea.setSelectionRange(0, tempTextArea.value.length);
+
+  try {
+    const successful = document.execCommand("copy");
+    if (successful) {
       showToast(message, "success");
-    })
-    .catch((err) => {
-      console.error("Failed to copy text:", err);
+    } else {
       showToast("Failed to copy Order ID. Please copy it manually.", "error");
-    });
+    }
+  } catch (err) {
+    showToast("Failed to copy Order ID. Please copy it manually.", "error");
+  } finally {
+    document.body.removeChild(tempTextArea);
+  }
 }
+
+// Manual copy
+document.addEventListener("DOMContentLoaded", () => {
+  const paymentOrderIdElement = document.getElementById("paymentOrderId");
+  const copyButton = document.querySelector(".copy-btn");
+
+  if (paymentOrderIdElement && copyButton) {
+    copyButton.addEventListener("click", () => {
+      const textToCopy = paymentOrderIdElement.textContent;
+
+      const tempTextArea = document.createElement("textarea");
+      tempTextArea.value = textToCopy;
+      document.body.appendChild(tempTextArea);
+
+      tempTextArea.select();
+      try {
+        document.execCommand("copy");
+        copyButton.value = "Copied!";
+        setTimeout(() => {
+          copyButton.value = "Copy Order ID";
+        }, 2000);
+      } catch (err) {
+        alert("Failed to copy text. Please copy it manually: " + textToCopy);
+      } finally {
+        document.body.removeChild(tempTextArea);
+      }
+    });
+  }
+});
 
 async function confirmPayment() {
   const accountName = document.getElementById("accountName").value.trim();

@@ -1199,6 +1199,35 @@ input:hover {
     color: #666;
 }
 
+.copy-btn {
+    border: none;
+    background: green;
+    color: white;
+    padding: 0.5rem 1.8rem;
+    margin-top: 1rem;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.copy-btn:hover {
+    outline: none;
+    border: 0.5px solid green;
+    color: green;
+    background-color: white;
+    box-shadow: unset;
+    width: auto;
+}
+
+#pickup:hover,
+#delivery:hover {
+    outline: none;
+    border-color: unset;
+    background-color: unset;
+    box-shadow: unset;
+    width: auto;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
