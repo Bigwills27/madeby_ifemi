@@ -228,6 +228,8 @@ input:hover {
     align-items: center;
     gap: 16px;
     cursor: pointer;
+    text-decoration: none;
+    color: #0d0c22;
 }
 
 .avatars {
@@ -242,10 +244,23 @@ input:hover {
     border: 2px solid white;
     margin-left: -8px;
     background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem;
+    transition: 0.2s ease-in-out;
+}
+
+.avatar:hover {
+    scale: 1.1;
 }
 
 .avatar:first-child {
     margin-left: 0;
+}
+
+.social-icon {
+    width: 100%;
 }
 
 .base {

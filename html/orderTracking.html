@@ -4,11 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Tracking</title>
+    <title>Track Order | MadeBy_Ifemi</title>
+    <link rel="icon" href="../images/yarn.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ancizar+Sans:ital,wght@0,100..1000;1,100..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+        /* font-family: "Ancizar Sans", sans-serif; */
+        /* font-family: "Montserrat", sans-serif; */
         * {
             margin: 0;
             padding: 0;
@@ -27,7 +32,7 @@
 
         .chat-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 600px;
             height: 600px;
             background: #ffffff;
             border-radius: 25px;
@@ -47,9 +52,10 @@
         }
 
         .chat-header h1 {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 1.5em;
+            font-weight: 800;
             margin-bottom: 5px;
+            font-family: "Ancizar Sans", sans-serif;
         }
 
         .chat-header p {
@@ -64,6 +70,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            font-family: "Ancizar Sans", sans-serif;
         }
 
         .message {
@@ -371,7 +378,7 @@
         const chatMessages = document.getElementById('chatMessages');
         const orderInput = document.getElementById('orderInput');
         const sendButton = document.getElementById('sendButton');
-        const API_BASE_URL = "http://localhost:10000/api";
+        const API_BASE_URL = "https://ifemade-server.onrender.com/api";
 
 
         function addMessage(content, isUser = false) {

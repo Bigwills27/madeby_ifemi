@@ -25,10 +25,16 @@ document.addEventListener("DOMContentLoaded", function () {
   //   The one with overlay blocking
   const overlay = document.querySelector(".overlay");
   overlay.addEventListener("mouseenter", () => {
-    console.log("hovering");
     productImg[2].style.filter = "grayscale(0)";
   });
   overlay.addEventListener("mouseleave", function () {
+    productImg[2].style.filter = "grayscale(1)";
+  });
+
+  overlay.addEventListener("touchstart", () => {
+    productImg[2].style.filter = "grayscale(0)";
+  });
+  overlay.addEventListener("touchend", function () {
     productImg[2].style.filter = "grayscale(1)";
   });
 
