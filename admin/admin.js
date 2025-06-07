@@ -616,13 +616,17 @@ function renderOrdersGrid(orders) {
     .map(
       (order) => `
         <div class="order-card">
-            <div class="order-header">
-                <div class="order-id">Order #${order._id.slice(-6)}</div>
-                <div class="order-customer">${order.customerName}</div>
-                <div class="order-date">${formatDate(order.orderDate)}</div>
-                <div class="order-status status-${
-                  order.paymentStatus
-                }">${order.paymentStatus.replace("_", " ")}</div>
+          <button
+            class="order-delete-btn"
+            onclick="deleteOrder('${order._id}', '${order.customerName}')"
+          >&times;</button>
+          <div class="order-header">
+            <div class="order-id">Order #${order._id.slice(-6)}</div>
+            <div class="order-customer">${order.customerName}</div>
+            <div class="order-date">${formatDate(order.orderDate)}</div>
+            <div class="order-status status-${order.paymentStatus}">
+              ${order.paymentStatus.replace("_", " ")}
+            </div>
             </div>
             <div class="order-body">
                 <div class="order-details">
@@ -892,6 +896,42 @@ async function viewOrderDetails(orderId) {
   }
 }
 
+// Delete order
+async function deleteOrder(orderId, customerName) {
+  if (
+    !confirm(
+      `Are you sure you want to delete the order from "${customerName}"? This cannot be undone.`
+    )
+  ) {
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      // try JSON first, fall back to text
+      let errMsg;
+      try {
+        const payload = await res.json();
+        errMsg = payload.error || payload.message;
+      } catch {
+        errMsg = await res.text();
+      }
+      throw new Error(errMsg || "Failed to delete order");
+    }
+
+    showMessage("ordersMessage", "Order deleted successfully!", "success");
+    loadOrders();
+    loadDashboardStats();
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    showMessage("ordersMessage", error.message, "error");
+  }
+}
+
 /**
  * Close order modal
  */
@@ -1051,3 +1091,4 @@ window.viewOrderDetails = viewOrderDetails;
 window.closeOrderModal = closeOrderModal;
 window.confirmPayment = confirmPayment;
 window.cancelOrder = cancelOrder;
+window.deleteOrder = deleteOrder;

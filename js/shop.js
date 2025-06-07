@@ -751,8 +751,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .querySelector(".custom-request-btn")
     .addEventListener("click", (e) => {
-      e.preventDefault();
-      alert("This would redirect to Whatsapp.");
+      showToast("This would redirect to Whatsapp.");
     });
 
   const buttons = document.querySelectorAll(

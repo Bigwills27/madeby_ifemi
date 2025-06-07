@@ -565,6 +565,23 @@ body {
     overflow: hidden;
     transition: all var(--transition-normal);
     padding: 1rem;
+    position: relative;
+}
+
+.order-delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 2.4rem;
+    line-height: 1;
+    color: var(--color-danger);
+    cursor: pointer;
+}
+
+.order-delete-btn:hover {
+    color: #b91c1c;
 }
 
 .order-card:hover {
