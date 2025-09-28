@@ -19,11 +19,41 @@
         <!-- Header -->
         <header class="header">
             <a href="#" class="logo">
-                <div class="logo-icon">🧶</div>
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                </div>
                 <span class="logo-text">MadeBy_Ifemi</span>
             </a>
-            <div class="admin-badge">
-                Admin Panel
+            <div class="header-controls">
+                <!-- Dark Mode Toggle -->
+                <div class="theme-toggle">
+                    <input type="checkbox" id="theme-toggle" class="theme-toggle-checkbox">
+                    <label for="theme-toggle" class="theme-toggle-label">
+                        <div class="theme-toggle-slider">
+                            <div class="theme-toggle-icon sun">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="5" />
+                                    <path
+                                        d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                                </svg>
+                            </div>
+                            <div class="theme-toggle-icon moon">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="admin-badge">
+                    Admin Panel
+                </div>
             </div>
         </header>
 
@@ -197,21 +227,21 @@
                         </div>
 
                         <div class="form-group full-width">
-                            <label class="form-label" for="productImage">Product Image *</label>
+                            <label class="form-label" for="productImages">Product Images * (1-5 images)</label>
                             <div class="file-input-container">
-                                <input type="file" id="productImage" name="image" class="file-input" accept="image/*"
-                                    required>
-                                <label for="productImage" class="file-input-label">
+                                <input type="file" id="productImages" name="images" class="file-input" accept="image/*"
+                                    multiple required>
+                                <label for="productImages" class="file-input-label">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2">
                                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                         <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                         <polyline points="21,15 16,10 5,21"></polyline>
                                     </svg>
-                                    Choose Image
+                                    Choose Images (Max 5)
                                 </label>
                             </div>
-                            <div class="file-preview" id="imagePreview"></div>
+                            <div class="file-preview-grid" id="imagePreview"></div>
                         </div>
 
                         <div class="form-group full-width">
@@ -332,8 +362,11 @@
                         <select id="orderStatusFilter" class="form-select">
                             <option value="">All Statuses</option>
                             <option value="pending">Pending Payment</option>
-                            <option value="payment_made">Payment Made</option>
-                            <option value="confirmed">Confirmed</option>
+                            <option value="payment_confirmed">Payment Confirmed</option>
+                            <option value="in_production">In Production</option>
+                            <option value="ready">Ready</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
                             <option value="cancelled">Cancelled</option>
                         </select>
                     </div>
@@ -392,21 +425,21 @@
                         </div>
 
                         <div class="form-group full-width">
-                            <label class="form-label" for="editProductImage">Update Image (optional)</label>
+                            <label class="form-label" for="editProductImages">Update Images (optional)</label>
                             <div class="file-input-container">
-                                <input type="file" id="editProductImage" class="file-input" accept="image/*">
-                                <label for="editProductImage" class="file-input-label">
+                                <input type="file" id="editProductImages" class="file-input" accept="image/*" multiple>
+                                <label for="editProductImages" class="file-input-label">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2">
                                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                         <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                         <polyline points="21,15 16,10 5,21"></polyline>
                                     </svg>
-                                    Choose New Image
+                                    Choose New Images (Max 5)
                                 </label>
                             </div>
-                            <div class="file-preview" id="currentImagePreview"></div>
-                            <div class="file-preview" id="editImagePreview"></div>
+                            <div class="file-preview-grid" id="currentImagePreview"></div>
+                            <div class="file-preview-grid" id="editImagePreview"></div>
                         </div>
 
                         <div class="form-group full-width">
@@ -453,6 +486,7 @@
 
     </div>
 
+    <script src="../js/theme.js"></script>
     <script src="./admin.js"></script>
 </body>
 

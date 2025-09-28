@@ -129,7 +129,73 @@ async function loadDashboardStats() {
 }
 
 /**
- * Handle image preview
+ * Handle multiple image preview
+ */
+function handleMultipleImagePreview(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+
+  input.addEventListener("change", (e) => {
+    const files = Array.from(e.target.files);
+
+    // Limit to 5 images
+    if (files.length > 5) {
+      showMessage(
+        `${inputId.includes("edit") ? "editMessage" : "productsMessage"}`,
+        "You can only upload a maximum of 5 images.",
+        "error"
+      );
+      input.value = "";
+      return;
+    }
+
+    preview.innerHTML = "";
+
+    files.forEach((file, index) => {
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageItem = document.createElement("div");
+          imageItem.className = "file-preview-item";
+          imageItem.innerHTML = `
+            <img src="${e.target.result}" alt="Preview ${index + 1}">
+            <button type="button" class="remove-image" onclick="removeImagePreview(this, '${inputId}')">×</button>
+          `;
+          preview.appendChild(imageItem);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+}
+
+/**
+ * Remove image from preview
+ */
+function removeImagePreview(button, inputId) {
+  const input = document.getElementById(inputId);
+  const imageItem = button.parentElement;
+  const preview = imageItem.parentElement;
+  const imageIndex = Array.from(preview.children).indexOf(imageItem);
+
+  // Remove the preview item
+  imageItem.remove();
+
+  // Update the file input by creating a new FileList without the removed file
+  const dt = new DataTransfer();
+  const files = Array.from(input.files);
+
+  files.forEach((file, index) => {
+    if (index !== imageIndex) {
+      dt.items.add(file);
+    }
+  });
+
+  input.files = dt.files;
+}
+
+/**
+ * Handle single image preview (for backward compatibility)
  */
 function handleImagePreview(inputId, previewId) {
   const input = document.getElementById(inputId);
@@ -163,7 +229,9 @@ async function addProduct(event) {
     const description = document
       .getElementById("productDescription")
       .value.trim();
-    const imageFile = document.getElementById("productImage").files[0];
+    const imageFiles = Array.from(
+      document.getElementById("productImages").files
+    );
 
     // 👇 START: Size price collection (added)
     const prices = {};
@@ -187,10 +255,19 @@ async function addProduct(event) {
       categories.push("new");
     }
 
-    if (!name || !description || !imageFile) {
+    if (!name || !description || imageFiles.length === 0) {
       showMessage(
         "addMessage",
-        "Please fill in all required fields and select an image.",
+        "Please fill in all required fields and select at least one image.",
+        "error"
+      );
+      return;
+    }
+
+    if (imageFiles.length > 5) {
+      showMessage(
+        "addMessage",
+        "You can only upload a maximum of 5 images.",
         "error"
       );
       return;
@@ -204,7 +281,12 @@ async function addProduct(event) {
 
     formData.append("name", name);
     formData.append("description", description);
-    formData.append("image", imageFile);
+
+    // Append multiple images
+    imageFiles.forEach((file, index) => {
+      formData.append("images", file);
+    });
+
     formData.append("categories", JSON.stringify(categories));
 
     const response = await fetch(`${API_BASE_URL}/products`, {
@@ -290,11 +372,29 @@ function renderProductsGrid(products) {
         product?.prices?.S || Object.values(product?.prices || {})[0] || null;
       const priceDisplay = price ? formatPrice(price) : "Price Unavailable";
 
+      // Handle both single image (backward compatibility) and multiple images
+      const firstImage =
+        product.images && product.images.length > 0
+          ? product.images[0]
+          : product.image || "";
+      const imageCount = product.images
+        ? product.images.length
+        : product.image
+        ? 1
+        : 0;
+
       return `
         <div class="product-card">
-            <img src="${product.image}" alt="${
+            <div class="product-image-container">
+              <img src="${firstImage}" alt="${
         product.name
       }" class="product-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0xMDAgNzBMMTMwIDEwMEgxMTBWMTMwSDkwVjEwMEg3MEwxMDAgNzBaIiBmaWxsPSIjQ0NDIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5IiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg=='">
+              ${
+                imageCount > 1
+                  ? `<div class="image-count-badge">${imageCount}</div>`
+                  : ""
+              }
+            </div>
             <div class="product-info">
                 <h3 class="product-name">${product.name}</h3>
                 <div class="product-price">${priceDisplay}</div>
@@ -406,11 +506,27 @@ async function editProduct(id) {
       product.categories.includes("new");
     document.getElementById("editCatCatalogue").checked = true;
 
-    // Show current image
-    document.getElementById("currentImagePreview").innerHTML = `
-            <p>Current Image:</p>
-            <img src="${product.image}" alt="${product.name}">
-        `;
+    // Show current images
+    const currentImages =
+      product.images || (product.image ? [product.image] : []);
+    if (currentImages.length > 0) {
+      document.getElementById("currentImagePreview").innerHTML = `
+        <p>Current Images:</p>
+        ${currentImages
+          .map(
+            (img, index) => `
+          <div class="file-preview-item">
+            <img src="${img}" alt="${product.name} ${index + 1}">
+          </div>
+        `
+          )
+          .join("")}
+      `;
+    } else {
+      document.getElementById(
+        "currentImagePreview"
+      ).innerHTML = `<p>No images available</p>`;
+    }
 
     // Clear new image preview
     document.getElementById("editImagePreview").innerHTML = "";
@@ -463,7 +579,9 @@ async function updateProduct(event) {
     const description = document
       .getElementById("editProductDescription")
       .value.trim();
-    const imageFile = document.getElementById("editProductImage").files[0];
+    const imageFiles = Array.from(
+      document.getElementById("editProductImages").files
+    );
 
     // Get selected categories
     const categories = [];
@@ -484,6 +602,15 @@ async function updateProduct(event) {
       return;
     }
 
+    if (imageFiles.length > 5) {
+      showMessage(
+        "editMessage",
+        "You can only upload a maximum of 5 images.",
+        "error"
+      );
+      return;
+    }
+
     // Append form data
     formData.append("name", name);
     if (Object.keys(prices).length > 0) {
@@ -492,9 +619,11 @@ async function updateProduct(event) {
     formData.append("description", description);
     formData.append("categories", JSON.stringify(categories));
 
-    // Only append image if a new one is selected
-    if (imageFile) {
-      formData.append("image", imageFile);
+    // Only append images if new ones are selected
+    if (imageFiles.length > 0) {
+      imageFiles.forEach((file, index) => {
+        formData.append("images", file);
+      });
     }
 
     const response = await fetch(
@@ -624,8 +753,17 @@ function renderOrdersGrid(orders) {
             <div class="order-id">Order #${order._id.slice(-6)}</div>
             <div class="order-customer">${order.customerName}</div>
             <div class="order-date">${formatDate(order.orderDate)}</div>
-            <div class="order-status status-${order.paymentStatus}">
-              ${order.paymentStatus.replace("_", " ")}
+            <div class="order-status-container">
+              <div class="order-status status-${
+                order.status || order.paymentStatus
+              }">
+                ${(order.status || order.paymentStatus).replace(/_/g, " ")}
+              </div>
+              ${
+                order.emailNotificationPending
+                  ? '<div class="email-embargo-indicator" title="Email notification pending"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div>'
+                  : ""
+              }
             </div>
             </div>
             <div class="order-body">
@@ -671,24 +809,65 @@ function renderOrdersGrid(orders) {
                     }')">
                         View Details
                     </button>
-                    ${
-                      order.paymentStatus === "payment_made"
-                        ? `
-                    <button class="btn btn-success btn-small" onclick="confirmPayment('${order._id}')">
-                        Confirm Payment
+                    <div class="status-management">
+                        <select class="status-select" onchange="updateOrderStatus('${
+                          order._id
+                        }', this.value)">
+                            <option value="pending" ${
+                              (order.status || order.paymentStatus) ===
+                              "pending"
+                                ? "selected"
+                                : ""
+                            }>Pending</option>
+                            <option value="payment_confirmed" ${
+                              (order.status || order.paymentStatus) ===
+                              "payment_confirmed"
+                                ? "selected"
+                                : ""
+                            }>Payment Confirmed</option>
+                            <option value="in_production" ${
+                              (order.status || order.paymentStatus) ===
+                              "in_production"
+                                ? "selected"
+                                : ""
+                            }>In Production</option>
+                            <option value="ready" ${
+                              (order.status || order.paymentStatus) === "ready"
+                                ? "selected"
+                                : ""
+                            }>Ready</option>
+                            <option value="shipped" ${
+                              (order.status || order.paymentStatus) ===
+                              "shipped"
+                                ? "selected"
+                                : ""
+                            }>Shipped</option>
+                            <option value="delivered" ${
+                              (order.status || order.paymentStatus) ===
+                              "delivered"
+                                ? "selected"
+                                : ""
+                            }>Delivered</option>
+                            <option value="cancelled" ${
+                              (order.status || order.paymentStatus) ===
+                              "cancelled"
+                                ? "selected"
+                                : ""
+                            }>Cancelled</option>
+                        </select>
+                        <button class="btn btn-email btn-small" onclick="sendStatusEmail('${
+                          order._id
+                        }', '${
+        order.status || order.paymentStatus
+      }')" title="Send status email">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        </button>
+                    </div>
+                    <button class="btn btn-danger btn-small" onclick="deleteOrder('${
+                      order._id
+                    }', '${order.customerName}')">
+                        Delete
                     </button>
-                    `
-                        : ""
-                    }
-                    ${
-                      order.paymentStatus === "pending"
-                        ? `
-                    <button class="btn btn-danger btn-small" onclick="cancelOrder('${order._id}')">
-                        Cancel Order
-                    </button>
-                    `
-                        : ""
-                    }
                 </div>
             </div>
         </div>
@@ -1049,8 +1228,8 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("change", searchOrders);
 
   // Image preview handlers
-  handleImagePreview("productImage", "imagePreview");
-  handleImagePreview("editProductImage", "editImagePreview");
+  handleMultipleImagePreview("productImages", "imagePreview");
+  handleMultipleImagePreview("editProductImages", "editImagePreview");
 
   // Close modals when clicking outside
   document.getElementById("editModal").addEventListener("click", function (e) {
@@ -1080,6 +1259,117 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("CMS Admin Panel with Order Management initialized");
 });
 
+// Status Management Functions
+async function updateOrderStatus(orderId, newStatus) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (response.ok) {
+      // Show modal asking about email notification
+      showEmailNotificationModal(orderId, newStatus);
+      // Refresh orders to show updated status
+      fetchOrders();
+    } else {
+      throw new Error("Failed to update status");
+    }
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    alert("Failed to update order status. Please try again.");
+  }
+}
+
+async function sendStatusEmail(orderId, status) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/orders/${orderId}/send-email`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ emailType: status }),
+      }
+    );
+
+    if (response.ok) {
+      alert("Email sent successfully!");
+      // Refresh orders to update email indicators
+      fetchOrders();
+    } else {
+      throw new Error("Failed to send email");
+    }
+  } catch (error) {
+    console.error("Error sending email:", error);
+    alert("Failed to send email. Please try again.");
+  }
+}
+
+function showEmailNotificationModal(orderId, newStatus) {
+  const modal = document.createElement("div");
+  modal.className = "email-notification-modal";
+  modal.innerHTML = `
+    <div class="modal-overlay">
+      <div class="modal-content email-modal">
+        <h3>Send Status Update Email?</h3>
+        <p>Order status has been updated to <strong>${newStatus.replace(
+          /_/g,
+          " "
+        )}</strong>.</p>
+        <p>Would you like to send an email notification to the customer?</p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="confirmSendEmail('${orderId}', '${newStatus}')">
+            Yes, Send Email
+          </button>
+          <button class="btn btn-secondary" onclick="skipEmailNotification('${orderId}')">
+            No, Skip Email
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+async function confirmSendEmail(orderId, status) {
+  closeEmailModal();
+  await sendStatusEmail(orderId, status);
+}
+
+function skipEmailNotification(orderId) {
+  // Mark order as having pending email notification
+  markEmailPending(orderId);
+  closeEmailModal();
+}
+
+function closeEmailModal() {
+  const modal = document.querySelector(".email-notification-modal");
+  if (modal) {
+    modal.remove();
+  }
+}
+
+async function markEmailPending(orderId) {
+  try {
+    await fetch(`${API_BASE_URL}/orders/${orderId}/email-pending`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ emailPending: true }),
+    });
+    // Refresh orders to show email embargo indicator
+    fetchOrders();
+  } catch (error) {
+    console.error("Error marking email as pending:", error);
+  }
+}
+
 // Make functions globally available for onclick handlers
 window.switchTab = switchTab;
 window.clearFilters = clearFilters;
@@ -1091,4 +1381,8 @@ window.viewOrderDetails = viewOrderDetails;
 window.closeOrderModal = closeOrderModal;
 window.confirmPayment = confirmPayment;
 window.cancelOrder = cancelOrder;
+window.updateOrderStatus = updateOrderStatus;
+window.sendStatusEmail = sendStatusEmail;
+window.confirmSendEmail = confirmSendEmail;
+window.skipEmailNotification = skipEmailNotification;
 window.deleteOrder = deleteOrder;

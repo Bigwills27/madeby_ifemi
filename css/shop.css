@@ -1,6 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Boldonse&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
 :root {
     --primary: #46b7d1;
     --light-gray: rgb(248, 248, 248);
+
+    /* Light theme colors */
+    --bg-primary: #e8f0f0;
+    --bg-secondary: white;
+    --bg-card: white;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-muted: #9e9ea7;
+    --border-color: #e5e7eb;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+    --bg-primary: rgb(30, 29, 27);
+    --bg-secondary: rgb(36, 37, 39);
+    --bg-card: rgb(36, 37, 39);
+    --text-primary: #f8f9fa;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --border-color: #4b5563;
+    --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -10,19 +34,109 @@
 }
 
 body {
-    background-color: #e8f0f0;
+    background-color: var(--bg-primary);
     min-height: 100vh;
     padding: 20px;
-    font-family: "Montserrat", sans-serif;
+    font-family: "Open Sans", sans-serif;
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.modal-title,
+.item-name,
+.cart-title,
+.checkout-title,
+.section-title {
+    font-family: "Boldonse", serif;
+    font-weight: normal;
+}
+
+p,
+span,
+div,
+input,
+button,
+label {
+    font-family: "Open Sans", sans-serif;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    position: relative;
+    margin-right: 1rem;
+}
+
+.theme-toggle-checkbox {
+    display: none;
+}
+
+.theme-toggle-label {
+    display: block;
+    width: 60px;
+    height: 30px;
+    background: var(--border-color);
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
+    background: var(--bg-secondary);
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.theme-toggle-icon {
+    font-size: 12px;
+    position: absolute;
+    transition: opacity 0.3s ease;
+}
+
+.theme-toggle-icon.moon {
+    opacity: 0;
+}
+
+.theme-toggle-checkbox:checked+.theme-toggle-label {
+    background: var(--primary);
+}
+
+.theme-toggle-checkbox:checked+.theme-toggle-label .theme-toggle-slider {
+    transform: translateX(30px);
+}
+
+.theme-toggle-checkbox:checked+.theme-toggle-label .theme-toggle-icon.sun {
+    opacity: 0;
+}
+
+.theme-toggle-checkbox:checked+.theme-toggle-label .theme-toggle-icon.moon {
+    opacity: 1;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    background: white;
+    background: var(--bg-secondary);
     border-radius: 24px;
     padding: 32px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px var(--shadow-color);
+    transition: background-color 0.3s ease;
 }
 
 /* Loading and Error States */
@@ -102,7 +216,7 @@ body {
     align-items: center;
     gap: 8px;
     font-weight: 900;
-    color: #333;
+    color: var(--text-primary);
     font-family: "Ancizar Sans", sans-serif;
     text-decoration: none;
 }
@@ -142,20 +256,20 @@ body {
     border: 2px solid transparent;
     border-radius: 8px;
     outline: none;
-    background-color: #f3f3f4;
-    color: #0d0c22;
-    transition: .3s ease;
+    background-color: var(--border-color);
+    color: var(--text-primary);
+    transition: .3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
 .input::placeholder {
-    color: #9e9ea7;
+    color: var(--text-muted);
 }
 
 .input:focus,
 input:hover {
     outline: none;
     border-color: var(--primary);
-    background-color: #fff;
+    background-color: var(--bg-secondary);
     box-shadow: 0 0 0 4px rgba(70, 183, 209, 0.1);
     width: 100%;
 }
@@ -163,9 +277,73 @@ input:hover {
 .icon {
     position: absolute;
     left: 1rem;
-    fill: #9e9ea7;
+    fill: var(--text-muted);
     width: 1rem;
     height: 1rem;
+}
+
+/* Search Container & Dropdown */
+.search-container {
+    position: relative;
+}
+
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--background-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.search-dropdown.show {
+    display: block;
+}
+
+.search-suggestion {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.search-suggestion:hover {
+    background-color: var(--background-secondary);
+}
+
+.search-suggestion:last-child {
+    border-bottom: none;
+}
+
+.suggestion-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.suggestion-info {
+    flex: 1;
+}
+
+.suggestion-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.suggestion-price {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 .track-btn {
@@ -217,7 +395,7 @@ input:hover {
 
 .section-title {
     font-size: 2.5rem;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
     font-weight: 900;
     font-family: "Ancizar Sans", sans-serif;
@@ -254,19 +432,25 @@ input:hover {
 
 /* Item Cards */
 .item-card {
-    background: white;
+    background: var(--bg-card);
     border-radius: 16px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 20px var(--shadow-color);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     min-width: 280px;
     cursor: pointer;
     position: relative;
+    border: 1px solid var(--border-color);
 }
 
 .item-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.item-image-container {
+    position: relative;
+    overflow: hidden;
 }
 
 .item-image {
@@ -282,6 +466,19 @@ input:hover {
     filter: grayscale(0);
 }
 
+.image-count-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
 .item-info {
     padding: 1.5rem;
 }
@@ -289,7 +486,7 @@ input:hover {
 .item-name {
     font-size: 1.3rem;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
     font-family: "Ancizar Sans", sans-serif;
 }
@@ -361,16 +558,17 @@ input:hover {
 
 /* Custom Request Section */
 .custom-request {
-    background: var(--light-gray);
+    background: var(--bg-card);
     padding: 3rem 2rem;
     border-radius: 20px;
     text-align: center;
     margin: 4rem 0;
+    border: 1px solid var(--border-color);
 }
 
 .custom-request h3 {
     font-size: 2rem;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 1rem;
     font-family: "Ancizar Sans", sans-serif;
     font-weight: 900;
@@ -378,7 +576,7 @@ input:hover {
 
 .custom-request p {
     font-size: 1.2rem;
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 2rem;
 }
 
@@ -413,20 +611,23 @@ input:hover {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(4px);
+    transition: background-color 0.3s ease;
 }
 
 .modal-content {
-    background-color: white;
+    background: var(--bg-secondary);
     margin: 2% auto;
-    padding: 0;
     border-radius: 20px;
+    max-width: 800px;
     width: 90%;
-    max-width: 900px;
     max-height: 90vh;
     overflow-y: auto;
+    box-shadow: 0 20px 60px var(--shadow-color);
     position: relative;
     animation: modalSlideIn 0.3s ease;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 @keyframes modalSlideIn {
@@ -451,7 +652,7 @@ input:hover {
 
 .modal-title {
     font-size: 1.8rem;
-    color: #333;
+    color: var(--text-primary);
     font-weight: 600;
     font-family: "Ancizar Sans", sans-serif;
 }
@@ -472,8 +673,15 @@ input:hover {
 .modal-body {
     padding: 2rem;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* grid-template-columns: 1fr 1fr; */
     gap: 2rem;
+}
+
+.modal-image-gallery {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-image {
@@ -482,6 +690,158 @@ input:hover {
     object-fit: cover;
     border-radius: 15px;
     background: linear-gradient(45deg, #f0e6d6, #e8dcc6);
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.modal-image:hover {
+    opacity: 0.9;
+}
+
+.gallery-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 3;
+    transition: all 0.3s ease;
+}
+
+.gallery-nav:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.gallery-prev {
+    left: 10px;
+}
+
+.gallery-next {
+    right: 10px;
+}
+
+.image-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ccc;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.indicator-dot.active {
+    background: var(--primary);
+}
+
+/* Lightbox Modal */
+.lightbox-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.lightbox-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-image {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+    z-index: 10001;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox-close:hover {
+    opacity: 0.7;
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10001;
+    transition: all 0.3s ease;
+}
+
+.lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-prev {
+    left: 30px;
+}
+
+.lightbox-next {
+    right: 30px;
+}
+
+.lightbox-counter {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .modal-details {
@@ -494,11 +854,13 @@ input:hover {
     font-size: 2rem;
     color: var(--primary);
     font-weight: bold;
+    transition: color 0.3s ease;
 }
 
 .modal-description {
-    color: #666;
+    color: var(--text-secondary);
     line-height: 1.6;
+    transition: color 0.3s ease;
 }
 
 .option-group {
@@ -509,7 +871,7 @@ input:hover {
 
 .option-label {
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
     font-family: "Ancizar Sans", sans-serif;
 }
@@ -559,7 +921,7 @@ input:hover {
 }
 
 .color-option:checked+.color-swatch {
-    border-color: #333;
+    border-color: var(--text-primary);
     transform: scale(1.1);
 }
 
@@ -570,16 +932,16 @@ input:hover {
 }
 
 .quantity-btn {
-    background: var(--light-gray);
-    border: none;
+    background: var(--background-secondary);
+    border: 2px solid var(--border-color);
     width: 40px;
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 1.2rem;
     font-weight: bold;
-    color: #333;
-    transition: background 0.3s ease;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
 }
 
 .quantity-btn:hover {
@@ -588,24 +950,38 @@ input:hover {
 }
 
 .quantity-input {
-    width: 60px;
+    width: 60px !important;
+    min-width: 60px;
+    max-width: 60px;
     text-align: center;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     padding: 0.5rem;
     font-size: 1.1rem;
+    background: var(--background-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.quantity-input:hover,
+.quantity-input:focus {
+    width: 60px !important;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(70, 183, 209, 0.1);
 }
 
 .custom-message {
     width: 100%;
     min-height: 80px;
     padding: 0.75rem;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     font-family: "Montserrat", sans-serif;
     font-size: 0.9rem;
     resize: vertical;
     transition: border-color 0.3s ease;
+    background: var(--background-secondary);
+    color: var(--text-primary);
 }
 
 .custom-message:focus {
@@ -615,7 +991,7 @@ input:hover {
 }
 
 .custom-message::placeholder {
-    color: #9e9ea7;
+    color: var(--text-secondary);
 }
 
 .add-to-cart-btn {
@@ -661,9 +1037,9 @@ input:hover {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: white;
+    background: var(--bg-card);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px var(--shadow-color);
     padding: 1rem;
     display: flex;
     align-items: center;
@@ -673,6 +1049,7 @@ input:hover {
     z-index: 10000;
     animation: slideInRight 0.3s ease;
     border-left: 4px solid;
+    border: 1px solid var(--border-color);
 }
 
 .toast-success {
@@ -720,7 +1097,7 @@ input:hover {
 .toast-message {
     flex: 1;
     font-size: 0.9rem;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .toast-close {
@@ -728,13 +1105,13 @@ input:hover {
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
-    color: #999;
+    color: var(--text-muted);
     padding: 0;
     margin-left: 0.5rem;
 }
 
 .toast-close:hover {
-    color: #666;
+    color: var(--text-secondary);
 }
 
 @keyframes slideInRight {
@@ -782,7 +1159,7 @@ input:hover {
 
 .empty-cart h3 {
     margin-bottom: 0.5rem;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .cart-item {
@@ -812,7 +1189,7 @@ input:hover {
 .cart-item-name {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
 }
 
@@ -848,20 +1225,20 @@ input:hover {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: #f5f5f5;
+    background: var(--border-color);
     border-radius: 20px;
     padding: 0.25rem;
 }
 
 .cart-quantity-btn {
-    background: white;
+    background: var(--bg-secondary);
     border: none;
     width: 30px;
     height: 30px;
     border-radius: 50%;
     cursor: pointer;
     font-weight: bold;
-    color: #333;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -881,7 +1258,7 @@ input:hover {
 
 .cart-item-subtotal {
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     font-size: 1rem;
 }
 
@@ -897,13 +1274,13 @@ input:hover {
 
 .cart-remove-btn:hover {
     color: #f44336;
-    background: #ffeaea;
+    background: var(--border-color);
 }
 
 .cart-footer {
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
     padding: 1.5rem;
-    background: #fafafa;
+    background: var(--bg-primary);
 }
 
 .cart-total-section {
@@ -916,7 +1293,7 @@ input:hover {
 
 .cart-total-label {
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .cart-total-amount {
@@ -940,13 +1317,13 @@ input:hover {
 
 .btn-secondary {
     background: transparent;
-    color: #666;
-    border: 2px solid #ddd;
+    color: var(--text-secondary);
+    border: 2px solid var(--border-color);
 }
 
 .btn-secondary:hover {
-    background: #f5f5f5;
-    border-color: #ccc;
+    background: var(--border-color);
+    border-color: var(--text-muted);
 }
 
 .btn-primary {
@@ -969,7 +1346,7 @@ input:hover {
 
 /* Checkout Modal Styles */
 .checkout-modal-content {
-    max-width: 900px;
+    max-width: 800px;
     max-height: 90vh;
 }
 
@@ -986,14 +1363,15 @@ input:hover {
 }
 
 .checkout-summary {
-    background: #f9f9f9;
+    background: var(--bg-card);
     padding: 1.5rem;
     border-radius: 12px;
+    border: 1px solid var(--border-color);
 }
 
 .checkout-summary h4 {
     margin-bottom: 1rem;
-    color: #333;
+    color: var(--text-primary);
     font-family: "Ancizar Sans", sans-serif;
 }
 
@@ -1006,7 +1384,7 @@ input:hover {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
     font-size: 0.9rem;
 }
 
@@ -1016,11 +1394,11 @@ input:hover {
 
 .checkout-item-name {
     flex: 1;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .checkout-item-quantity {
-    color: #666;
+    color: var(--text-secondary);
     margin: 0 1rem;
 }
 
@@ -1033,12 +1411,12 @@ input:hover {
     padding-top: 1rem;
     border-top: 2px solid #ddd;
     font-size: 1.1rem;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .checkout-form-section h4 {
     margin-bottom: 1rem;
-    color: #333;
+    color: var(--text-primary);
     font-family: "Ancizar Sans", sans-serif;
 }
 
@@ -1050,16 +1428,22 @@ input:hover {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .form-input {
     width: 100%;
     padding: 0.75rem;
-    border: 2px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
 }
 
 .form-input:focus {
@@ -1075,6 +1459,7 @@ input:hover {
 }
 
 .radio-option {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -1091,6 +1476,13 @@ input:hover {
 }
 
 .radio-option input[type="radio"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
     margin: 0;
 }
 
@@ -1104,12 +1496,277 @@ input:hover {
     background: rgba(70, 183, 209, 0.1);
 }
 
+/* Add visual radio indicator */
+.radio-option::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    background: white;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.radio-option:has(input:checked)::before {
+    border-color: var(--primary);
+    background: var(--primary);
+    box-shadow: inset 0 0 0 3px white;
+}
+
 .checkout-submit-btn {
     width: 100%;
     padding: 1rem;
     font-size: 1.1rem;
     font-weight: 600;
     margin-top: 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.checkout-submit-btn:hover {
+    background: #3a9bc1;
+}
+
+.checkout-submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.checkout-submit-btn.loading {
+    color: transparent;
+    pointer-events: none;
+}
+
+.checkout-submit-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Order Confirmation Styles */
+.order-confirmation {
+    text-align: left;
+}
+
+.order-confirmation h3 {
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    font-family: "Ancizar Sans", sans-serif;
+}
+
+.confirmation-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.customer-info,
+.order-items {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.customer-info h4,
+.order-items h4 {
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    font-family: "Ancizar Sans", sans-serif;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.customer-info p {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.confirmation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.confirmation-item:last-child {
+    border-bottom: none;
+}
+
+.confirmation-total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #ddd;
+    font-size: 1.1rem;
+    text-align: right;
+}
+
+.confirmation-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.confirmation-actions .btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.confirmation-actions .btn-secondary {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.confirmation-actions .btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+.confirmation-actions .btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.confirmation-actions .btn-primary:hover {
+    background: #3a9bc1;
+}
+
+.confirmation-actions .btn-primary.loading {
+    color: transparent;
+    position: relative;
+}
+
+.confirmation-actions .btn-primary.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Mobile responsive styles for gallery and lightbox */
+@media (max-width: 768px) {
+    .theme-toggle {
+        margin-right: 0.5rem;
+    }
+
+    .theme-toggle-label {
+        width: 50px;
+        height: 25px;
+    }
+
+    .theme-toggle-slider {
+        width: 21px;
+        height: 21px;
+    }
+
+    .theme-toggle-icon {
+        font-size: 10px;
+    }
+
+    .theme-toggle-checkbox:checked+.theme-toggle-label .theme-toggle-slider {
+        transform: translateX(25px);
+    }
+
+    .gallery-nav {
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
+    }
+
+    .gallery-prev {
+        left: 5px;
+    }
+
+    .gallery-next {
+        right: 5px;
+    }
+
+    .lightbox-nav {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .lightbox-prev {
+        left: 15px;
+    }
+
+    .lightbox-next {
+        right: 15px;
+    }
+
+    .lightbox-close {
+        top: 15px;
+        right: 15px;
+        font-size: 2.5rem;
+    }
+
+    .lightbox-counter {
+        bottom: 15px;
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+
+    .image-count-badge {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    .confirmation-details {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .confirmation-actions {
+        flex-direction: column;
+    }
+
+    .confirmation-actions .btn {
+        width: 100%;
+    }
 }
 
 /* Payment Modal Styles */
@@ -1140,27 +1797,28 @@ input:hover {
 }
 
 .payment-success h4 {
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 1rem;
     font-family: "Ancizar Sans", sans-serif;
 }
 
 .payment-instructions {
-    background: #f9f9f9;
+    background: var(--bg-card);
     padding: 1.5rem;
     border-radius: 12px;
     margin-bottom: 2rem;
     text-align: left;
+    border: 1px solid var(--border-color);
 }
 
 .payment-instructions h5 {
     margin-bottom: 1rem;
-    color: #333;
+    color: var(--text-primary);
     font-family: "Ancizar Sans", sans-serif;
 }
 
 .account-details {
-    background: white;
+    background: var(--bg-secondary);
     padding: 1rem;
     border-radius: 8px;
     border: 2px solid var(--primary);
@@ -1170,7 +1828,7 @@ input:hover {
 .account-info {
     font-size: 1.1rem;
     line-height: 1.6;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .payment-note {
@@ -1231,51 +1889,58 @@ input:hover {
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
-        padding: 20px;
+        padding: 16px;
     }
 
     .header-right {
-        gap: 1rem;
+        gap: 16px;
+    }
+
+    .modal-body {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .modal-image {
+        height: 200px;
     }
 
     .section-title {
         font-size: 2rem;
     }
 
-    .horizontal-scroll {
-        gap: 1rem;
-    }
-
-    .item-card {
-        min-width: 250px;
-    }
-
-    .catalogue-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .modal-content {
-        width: 95%;
-        margin: 5% auto;
-    }
-
-    .modal-body {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 1.5rem;
-    }
-
-    .custom-request {
-        padding: 2rem 1rem;
-    }
-
     .custom-request h3 {
         font-size: 1.5rem;
     }
 
+    .custom-request p {
+        font-size: 1rem;
+    }
+
+    .custom-request-btn {
+        font-size: 1rem;
+        padding: 0.8rem 2rem;
+    }
+
+    .cart-actions {
+        flex-direction: column;
+    }
+
+    .cart-actions .btn {
+        width: 100%;
+    }
+
     .checkout-sections {
         grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .checkout-summary {
+        order: 2;
+    }
+
+    .checkout-form-section {
+        order: 1;
     }
 }
 

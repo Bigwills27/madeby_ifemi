@@ -2,10 +2,39 @@
 /* font-family: "Ancizar Sans", sans-serif; */
 /* font-family: "Montserrat", sans-serif; */
 
+@import url('https://fonts.googleapis.com/css2?family=Boldonse&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
 :root {
     /* --primary: #a27dd3; */
     --primary: #46b7d1;
     --light-gray: rgb(248, 248, 248);
+
+    /* Light theme colors */
+    --bg-primary: #e8f0f0;
+    --bg-secondary: white;
+    --bg-card: white;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-muted: #9e9ea7;
+    --border-color: #e5e7eb;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+    --bg-primary: rgb(30, 29, 27);
+    --bg-secondary: rgb(36, 37, 39);
+    --bg-card: rgb(36, 37, 39);
+    --text-primary: #f8f9fa;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --border-color: #4b5563;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode specific styles */
+[data-theme='dark'] .middle-top {
+    background-color: #00000040;
 }
 
 
@@ -21,19 +50,112 @@
 }
 
 body {
-    background-color: #e8f0f0;
+    background-color: var(--bg-primary);
+    font-family: "Open Sans", sans-serif;
+    margin: 0;
+    padding: 0;
     min-height: 100vh;
-    padding: 20px;
-    font-family: "Montserrat", sans-serif;
+    overflow-x: hidden;
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.hero-title,
+.section-title,
+.brand-name {
+    font-family: "Boldonse", serif;
+    font-weight: normal;
+}
+
+p,
+span,
+div,
+input,
+button,
+label {
+    font-family: "Open Sans", sans-serif;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    position: relative;
+    margin-right: 1rem;
+}
+
+.theme-toggle-checkbox {
+    display: none;
+}
+
+.theme-toggle-label {
+    display: block;
+    width: 60px;
+    height: 30px;
+    background: var(--border-color);
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
+    background: var(--bg-secondary);
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.theme-toggle-icon {
+    font-size: 12px;
+    position: absolute;
+    transition: opacity 0.3s ease;
+}
+
+.theme-toggle-icon.moon {
+    opacity: 0;
+}
+
+.theme-toggle-checkbox:checked+.theme-toggle-label {
+    background: var(--primary);
+}
+
+.theme-toggle-checkbox:checked+.theme-toggle-label .theme-toggle-slider {
+    transform: translateX(30px);
+}
+
+.theme-toggle-checkbox:checked+.theme-toggle-label .theme-toggle-icon.sun {
+    opacity: 0;
+}
+
+.theme-toggle-checkbox:checked+.theme-toggle-label .theme-toggle-icon.moon {
+    opacity: 1;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    background: white;
+    background: var(--bg-secondary);
     border-radius: 24px;
     padding: 32px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px var(--shadow-color);
+    min-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.3s ease;
 }
 
 /* Header */
@@ -49,7 +171,7 @@ body {
     align-items: center;
     gap: 8px;
     font-weight: 900;
-    color: #333;
+    color: var(--text-primary);
     font-family: "Ancizar Sans", sans-serif;
 }
 
@@ -85,23 +207,23 @@ body {
     line-height: 28px;
     padding: 0 1rem;
     padding-left: 2.5rem;
-    border: 2px solid transparent;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     outline: none;
-    background-color: #f3f3f4;
-    color: #0d0c22;
-    transition: .3s ease;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    transition: .3s ease, background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .input::placeholder {
-    color: #9e9ea7;
+    color: var(--text-muted);
 }
 
 .input:focus,
 input:hover {
     outline: none;
     border-color: var(--primary);
-    background-color: #fff;
+    background-color: var(--bg-secondary);
     box-shadow: 0 0 0 4px rgba(76, 234, 176, 0.1);
     width: 100%;
 }
@@ -129,13 +251,37 @@ input:hover {
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: #666;
+    color: var(--text-secondary);
+    position: relative;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.cart:hover {
+    color: var(--primary);
 }
 
 .cart-icon {
     width: 20px;
     height: 20px;
     cursor: pointer;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    min-width: 18px;
 }
 
 /* Main Content */
@@ -149,7 +295,7 @@ input:hover {
     font-size: 4rem;
     font-weight: 900;
     line-height: 1.1;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 40px;
     font-family: "Ancizar Sans", sans-serif;
 }
@@ -203,7 +349,7 @@ input:hover {
 
 .btn-secondary {
     background: transparent;
-    color: #333;
+    color: var(--text-primary);
     border: 2px solid #333;
 }
 
@@ -229,7 +375,7 @@ input:hover {
     gap: 16px;
     cursor: pointer;
     text-decoration: none;
-    color: #0d0c22;
+    color: var(--text-primary);
 }
 
 .avatars {
@@ -341,6 +487,7 @@ input:hover {
     background-color: var(--light-gray);
     padding: 1rem;
     border-radius: 16px;
+    transition: background-color 0.3s ease;
 }
 
 .heri-ctn {
@@ -442,6 +589,28 @@ input:hover {
 }
 
 @media (max-width: 768px) {
+    .theme-toggle {
+        margin-right: 0.5rem;
+    }
+
+    .theme-toggle-label {
+        width: 50px;
+        height: 25px;
+    }
+
+    .theme-toggle-slider {
+        width: 21px;
+        height: 21px;
+    }
+
+    .theme-toggle-icon {
+        font-size: 10px;
+    }
+
+    .theme-toggle-checkbox:checked+.theme-toggle-label .theme-toggle-slider {
+        transform: translateX(25px);
+    }
+
     .main-content {
         grid-template-columns: 1fr;
         gap: 40px;
