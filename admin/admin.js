@@ -1274,7 +1274,7 @@ async function updateOrderStatus(orderId, newStatus) {
       // Show modal asking about email notification
       showEmailNotificationModal(orderId, newStatus);
       // Refresh orders to show updated status
-      fetchOrders();
+      loadOrders();
     } else {
       throw new Error("Failed to update status");
     }
@@ -1300,7 +1300,7 @@ async function sendStatusEmail(orderId, status) {
     if (response.ok) {
       alert("Email sent successfully!");
       // Refresh orders to update email indicators
-      fetchOrders();
+      loadOrders();
     } else {
       throw new Error("Failed to send email");
     }
@@ -1364,7 +1364,7 @@ async function markEmailPending(orderId) {
       body: JSON.stringify({ emailPending: true }),
     });
     // Refresh orders to show email embargo indicator
-    fetchOrders();
+    loadOrders();
   } catch (error) {
     console.error("Error marking email as pending:", error);
   }

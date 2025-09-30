@@ -10,6 +10,13 @@ yarn-error.log*
 .env.production
 .env.staging
 
+# Test files and directories
+tests/
+test-*.js
+*test*.md
+diagnose-*.js
+validate-*.js
+
 # Logs
 logs/
 *.log
